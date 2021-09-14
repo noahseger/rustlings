@@ -11,7 +11,7 @@ struct Color {
     blue: u8,
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -25,21 +25,36 @@ struct Color {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = String;
-    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+    fn try_from(values: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let parsedValues = (
+            u8::try_from(values.0),
+            u8::try_from(values.1),
+            u8::try_from(values.2),
+        );
+
+        match parsedValues {
+            (Ok(red), Ok(green), Ok(blue)) => Ok(Color { red, green, blue }),
+            _ => Err(String::from("Invalid color tuple"))
+        }
     }
 }
 
 // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = String;
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+    fn try_from(values: [i16; 3]) -> Result<Self, Self::Error> {
+        Color::try_from((values[0], values[1], values[2]))
     }
 }
 
 // Slice implementation
 impl TryFrom<&[i16]> for Color {
     type Error = String;
-    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+    fn try_from(values: &[i16]) -> Result<Self, Self::Error> {
+        if (values.len() != 3) {
+            return Err(String::from("Expected exactly 3 values"));
+        }
+        Color::try_from((values[0], values[1], values[2]))
     }
 }
 
